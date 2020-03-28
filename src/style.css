@@ -1,0 +1,11 @@
+.checkboxes{
+
+}
+.wrapper-vertical{
+    display: flex;
+    flex-direction: column;
+}
+.wrapper-horizontal{
+    display: flex;
+    flex-direction: row;
+}

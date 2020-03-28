@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Epidemic Simulator</title>
+    <script src="p5/p5.min.js"></script>
+
+
+</head>
+<body>
+<div class="wrapper-vertical">
+    <div id="simulator-placeholder">
+
+    </div>
+    <div class = "wrapper-horizontal">
+        <div class="checkboxes wrapper-vertical">
+            <input type="checkbox" id ="show-radii" name="show-radii" value="show" onclick="getRadiusCheckboxValue()">
+            <label for="show-radii">Show radii of infected agents</label>
+        </div>
+        <div class="wrapper-vertical">
+
+            <input type="range" min = "1" max="100" value="20" id="infection-rate-slider">
+            <label>Infection rate in %</label>
+            <input type="range" min="5" max = "50" value = "25" id="infection-radius-slider">
+            <label>Infection radius</label>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+<script src="Agent.js"></script>
+<script src = simulator.js></script>
+</html>
