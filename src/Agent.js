@@ -10,9 +10,11 @@ class Agent {
 
     constructor(pos) {
         this.pos = pos;
-        this.radius = 5;
+        this.radius = 10;
         this.infState = infectionStates.SUSCEPTIBLE;
         this.velocity = 3;
+        this.timeInfected = 0;
+
     }
     show(sketch){
         switch (this.infState) {
@@ -32,22 +34,32 @@ class Agent {
         sketch.ellipse(this.pos.x, this.pos.y, this.radius, this.radius);
 
     }
-    update(sketch){
-        let xVelocity = sketch.random(-2.5,2.5);
-        let yVelocity = sketch.random(-2.5,2.5);
+    update(sketch, agent){
+        let xVelocity = sketch.random(-5.5,5.5);
+        let yVelocity = sketch.random(-5.5,5.5);
         let previousPos = this.pos;
+        let inRangeOfOtherAgent = false;
         this.pos.add(sketch.createVector(xVelocity,yVelocity));
-        if(this.pos.x >= 395 || this.pos.x <= 5 || this.pos.y >= 395 || this.pos.y <= 5){
+        if(agent != undefined){
+               inRangeOfOtherAgent  = this.inRange(agent, sketch);
+        }
+        if(this.pos.x >= 395 || this.pos.x <= 5 || this.pos.y >= 395 || this.pos.y <= 5|| inRangeOfOtherAgent){
             this.pos = previousPos;
             this.pos.sub(sketch.createVector(xVelocity, yVelocity));
         }
 
+
     }
     inRange(agent, sketch){
-
-        if(sketch.dist(this.pos.x, this.pos.y, agent.pos.x, agent.pos.y)<=infectionRadius)
-            return true;
-        return false;
-
+      return sketch.dist(this.pos.x, this.pos.y, agent.pos.x, agent.pos.y)<=infectionRadius
     }
+    recovered(){
+        if(this.timeInfected == 3){
+            this.infState = infectionStates.RECOVERED;
+            this.timeInfected = 0;
+            return true;
+        }
+        return false;
+    }
+
 }

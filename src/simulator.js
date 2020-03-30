@@ -1,6 +1,9 @@
 const showRadiiCheckbox = document.getElementById("show-radii");
 const infectionRateSlider = document.getElementById("infection-rate-slider");
 const infectionRadiusSlider = document.getElementById("infection-radius-slider");
+const infectionRateLabel = document.getElementById("infection-rate-label");
+let playing = true;
+let socialDistancing = false;
 let showRadii;
 let infectionRate = 20;
 let infectionRadius = 25;
@@ -8,9 +11,11 @@ let infectionRadius = 25;
 
 
 let simulator = function(sketch){
-    let numOfAgents = 100;
-    let agents = [];
+    const numOfAgents = 100;
+    let allAgents = [];
+    let susceptibleAgents = [];
     let infectedAgents = [];
+    let recoveredAgents = [];
     let timeUnit = 0;
     sketch.setup = () => {
 
@@ -18,14 +23,14 @@ let simulator = function(sketch){
         canvas.parent('simulator-placeholder');
         for(let i=0;i<numOfAgents;i++){
             let agent = new Agent(sketch.createVector(sketch.random(5, 395), sketch.random(5, 395)));
-            if(sketch.random(100) > 80) {
+            if(i<5) {
                 agent.infState = infectionStates.INFECTED;
                 infectedAgents.push(agent);
             }
             else{
-                agents.push(agent);
+                susceptibleAgents.push(agent);
             }
-
+            allAgents.push(agent);
 
 
         }
@@ -35,11 +40,22 @@ let simulator = function(sketch){
     sketch.draw = () => {
         sketch.background(0);
 
-        if(timeUnit == 200) {
+        if(timeUnit == 120) {
+
+            for(let i=infectedAgents.length-1;i>=0;i--){
+                infectedAgents[i].timeInfected = infectedAgents[i].timeInfected + 1;
+                if(infectedAgents[i].recovered()){
+                    recoveredAgents.push(infectedAgents.splice(i, 1)[0]);
+                }
+
+            }
+
+
             for (let infected of infectedAgents) {
-                for (let i = agents.length - 1; i >= 0; i--) {
-                    if (infected.inRange(agents[i], sketch) && sketch.random(100) < infectionRate) {
-                        let newInfected = agents.splice(i, 1)[0];
+
+                for (let i = susceptibleAgents.length - 1; i >= 0; i--) {
+                    if (infected.inRange(susceptibleAgents[i], sketch) && sketch.random(100) < infectionRate) {
+                        let newInfected = susceptibleAgents.splice(i, 1)[0];
                         newInfected.infState = infectionStates.INFECTED;
                         infectedAgents.push(newInfected);
                     }
@@ -49,23 +65,33 @@ let simulator = function(sketch){
         }
 
 
-
-
-        for(let agent of agents){
+        for(let agent of allAgents){
             agent.show(sketch);
-            agent.update(sketch);
+            if(socialDistancing){
+                for(let agent1 of allAgents){
+                    agent.update(sketch, agent1);
+                }
+            }
+            else {
+                agent.update(sketch);
+            }
         }
-        for(let infected of infectedAgents){
-            infected.show(sketch);
-            infected.update(sketch);
-        }
-        timeUnit++;
 
+
+        timeUnit++;
+        if((infectedAgents.length == numOfAgents || infectedAgents.length == 0 || recoveredAgents.length == numOfAgents) && timeUnit > 1){
+            alert("The epidemic is over");
+            sketch.noLoop();
+        }
     }
-    if(infectedAgents.length == numOfAgents){
-        alert("The epidemic has taken over the environment");
-        sketch.noLoop();
+    sketch.restart = () => {
+        recoveredAgents = [];
+        infectedAgents = [];
+        susceptibleAgents = [];
+        allAgents = [];
+        sketch.setup();
     }
+
 }
 
 
@@ -77,8 +103,19 @@ function getRadiusCheckboxValue(){
 }
 infectionRateSlider.oninput = function(){
     infectionRate = this.value;
-
+    infectionRateLabel.innerHTML = "Infection rate in %: "+infectionRate;
 }
 infectionRadiusSlider.oninput = function () {
     infectionRadius = this.value;
+}
+function toggleSocialDistancing(){
+    socialDistancing = !socialDistancing;
+}
+function play() {
+    playing = !playing;
+    if(playing)
+        sim.loop();
+    else
+        sim.noLoop();
+
 }

@@ -12,24 +12,22 @@
     <div id="simulator-placeholder">
 
     </div>
-    <div class = "wrapper-horizontal">
-        <div class="checkboxes wrapper-vertical">
-            <input type="checkbox" id ="show-radii" name="show-radii" value="show" onclick="getRadiusCheckboxValue()">
-            <label for="show-radii">Show radii of infected agents</label>
-        </div>
-        <div class="wrapper-vertical">
 
-            <input type="range" min = "1" max="100" value="20" id="infection-rate-slider">
-            <label>Infection rate in %</label>
-            <input type="range" min="5" max = "50" value = "25" id="infection-radius-slider">
-            <label>Infection radius</label>
-        </div>
+    <input type="checkbox" id="show-radii" name="show-radii" value="show" onclick="getRadiusCheckboxValue()">
 
-    </div>
+    <label for="show-radii">Show radii of infected agents</label>
+    <p></p>
+    <input type="range" min="1" max="100" value="20" id="infection-rate-slider">
+    <p id="infection-rate-label">Infection rate in %: 20</p>
+    <input type="range" min="5" max="50" value="25" id="infection-radius-slider">
+    <p>Infection radius</p>
+    <button id="toggle-social-distancing"onclick="toggleSocialDistancing()">Toggle social-distancing</button>
+    <button id="play-pause" onclick="play()">Play / Pause</button>
+    <button id="restart" onclick="sim.restart()">Restart</button>
 
 </div>
 
 </body>
 <script src="Agent.js"></script>
-<script src = simulator.js></script>
+<script src=simulator.js></script>
 </html>
