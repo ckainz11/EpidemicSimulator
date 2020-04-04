@@ -8,11 +8,14 @@ class Agent {
 
 
 
-    constructor(pos) {
+    constructor(pos, sketch) {
+        this.offset = sketch.random(10000);
         this.pos = pos;
         this.radius = 10;
         this.infState = infectionStates.SUSCEPTIBLE;
-        this.velocity = 3;
+        this.vel = p5.Vector.random2D();
+        this.vel.mult(sketch.random(3));
+        this.acc = sketch.createVector(0,0);
         this.timeInfected = 0;
 
     }
@@ -34,24 +37,33 @@ class Agent {
         sketch.ellipse(this.pos.x, this.pos.y, this.radius, this.radius);
 
     }
-    update(sketch, agent){
-        let xVelocity = sketch.random(-5.5,5.5);
-        let yVelocity = sketch.random(-5.5,5.5);
-        let previousPos = this.pos;
-        let inRangeOfOtherAgent = false;
-        this.pos.add(sketch.createVector(xVelocity,yVelocity));
-        if(agent != undefined){
-               inRangeOfOtherAgent  = this.inRange(agent, sketch);
-        }
-        if(this.pos.x >= 395 || this.pos.x <= 5 || this.pos.y >= 395 || this.pos.y <= 5|| inRangeOfOtherAgent){
-            this.pos = previousPos;
-            this.pos.sub(sketch.createVector(xVelocity, yVelocity));
-        }
+    update(sketch, agentsInRange){
 
 
+        for(let agent of agentsInRange){
+            let distance = p5.Vector.sub(this.pos, agent.pos);
+            distance.setMag(10);
+            this.acc.add(distance);
+        }
+
+        this.vel.add(this.acc);
+        this.vel.setMag(1);
+        this.pos.add(this.vel);
+        if(this.pos.x >= 405){
+            this.pos.x = 5;
+        }
+        else if(this.pos.x <= -5){
+            this.pos.x = 395;
+        }
+        else if(this.pos.y >= 405){
+            this.pos.y = 5;
+        }
+        else if(this.pos.y <= 5){
+            this.pos.y = 395;
+        }
     }
     inRange(agent, sketch){
-      return sketch.dist(this.pos.x, this.pos.y, agent.pos.x, agent.pos.y)<=infectionRadius
+      return this.pos.dist(agent.pos)<=infectionRadius;
     }
     recovered(){
         if(this.timeInfected == 3){
@@ -60,6 +72,10 @@ class Agent {
             return true;
         }
         return false;
+    }
+    changeAcceleration(sketch){
+        this.acc = p5.Vector.fromAngle((sketch.noise(sketch.frameCount / 500 + this.offset)*100)%(2*Math.PI));
+        this.acc.setMag(10);
     }
 
 }

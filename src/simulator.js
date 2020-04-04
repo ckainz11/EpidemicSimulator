@@ -6,12 +6,12 @@ let playing = true;
 let socialDistancing = false;
 let showRadii;
 let infectionRate = 20;
-let infectionRadius = 25;
+let infectionRadius = 25.0;
 
 
 
 let simulator = function(sketch){
-    const numOfAgents = 100;
+    const numOfAgents = 300;
     let allAgents = [];
     let susceptibleAgents = [];
     let infectedAgents = [];
@@ -22,7 +22,8 @@ let simulator = function(sketch){
         let canvas = sketch.createCanvas(400, 400);
         canvas.parent('simulator-placeholder');
         for(let i=0;i<numOfAgents;i++){
-            let agent = new Agent(sketch.createVector(sketch.random(5, 395), sketch.random(5, 395)));
+            let agent = new Agent(sketch.createVector(sketch.random(5, 395), sketch.random(5, 395)), sketch);
+            agent.changeAcceleration(sketch);
             if(i<5) {
                 agent.infState = infectionStates.INFECTED;
                 infectedAgents.push(agent);
@@ -67,22 +68,25 @@ let simulator = function(sketch){
 
         for(let agent of allAgents){
             agent.show(sketch);
+                agent.changeAcceleration(sketch);
+                let agentsInRange = [];
             if(socialDistancing){
                 for(let agent1 of allAgents){
-                    agent.update(sketch, agent1);
+                    if(agent.inRange(agent1, sketch)&&agent1 !== agent){
+                        agentsInRange.push(agent1);
+                    }
                 }
             }
-            else {
-                agent.update(sketch);
-            }
+            agent.update(sketch, agentsInRange);
         }
+
 
 
         timeUnit++;
-        if((infectedAgents.length == numOfAgents || infectedAgents.length == 0 || recoveredAgents.length == numOfAgents) && timeUnit > 1){
-            alert("The epidemic is over");
-            sketch.noLoop();
-        }
+        // if((infectedAgents.length == numOfAgents || infectedAgents.length == 0 || recoveredAgents.length == numOfAgents) && timeUnit > 1){
+        //     alert("The epidemic is over");
+        //     sketch.noLoop();
+        // }
     }
     sketch.restart = () => {
         recoveredAgents = [];
@@ -93,11 +97,8 @@ let simulator = function(sketch){
     }
 
 }
-
-
-
-
 let sim = new p5(simulator);
+
 function getRadiusCheckboxValue(){
     showRadii = showRadiiCheckbox.checked;
 }
