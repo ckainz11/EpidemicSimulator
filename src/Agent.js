@@ -38,40 +38,46 @@ class Agent {
 
     }
     update(sketch, agentsInRange){
+        let infectionFrame = false
+        if(sketch.frameCount % 60 == 0 && this.infState == infectionStates.INFECTED){
+            infectionFrame = true;
+            this.timeInfected += 1;
+        }
 
 
         for(let agent of agentsInRange){
-            let distance = p5.Vector.sub(this.pos, agent.pos);
-            distance.setMag(10);
-            this.acc.add(distance);
+            if(socialDistancing) {
+                let distance = p5.Vector.sub(this.pos, agent.pos);
+                distance.setMag(10);
+                this.acc.add(distance);
+            }
+            if(this.infState === infectionStates.INFECTED && infectionFrame){ //% 60 means every sec there is a infection attempt
+                if(agent.infState === infectionStates.SUSCEPTIBLE && sketch.random(100)<infectionRate){
+                    agent.infState = infectionStates.INFECTED;
+                }
+            }
         }
+        if(this.timeInfected == 5 && this.infState === infectionStates.INFECTED)
+            this.infState = infectionStates.RECOVERED;
 
         this.vel.add(this.acc);
         this.vel.setMag(1);
         this.pos.add(this.vel);
-        if(this.pos.x >= 405){
-            this.pos.x = 5;
-        }
-        else if(this.pos.x <= -5){
+        if(this.pos.x >= 395){
             this.pos.x = 395;
         }
-        else if(this.pos.y >= 405){
-            this.pos.y = 5;
+        else if(this.pos.x <= 5){
+            this.pos.x = 5;
+        }
+        else if(this.pos.y >= 395){
+            this.pos.y = 395;
         }
         else if(this.pos.y <= 5){
-            this.pos.y = 395;
+            this.pos.y = 5;
         }
     }
     inRange(agent, sketch){
       return this.pos.dist(agent.pos)<=infectionRadius;
-    }
-    recovered(){
-        if(this.timeInfected == 3){
-            this.infState = infectionStates.RECOVERED;
-            this.timeInfected = 0;
-            return true;
-        }
-        return false;
     }
     changeAcceleration(sketch){
         this.acc = p5.Vector.fromAngle((sketch.noise(sketch.frameCount / 500 + this.offset)*100)%(2*Math.PI));
