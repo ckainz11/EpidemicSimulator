@@ -16,14 +16,20 @@
     <input type="checkbox" id="show-radii" name="show-radii" value="show" onclick="getRadiusCheckboxValue()">
 
     <label for="show-radii">Show radii of infected agents</label>
-    <p></p>
-    <input type="range" min="1" max="100" value="20" id="infection-rate-slider">
     <p id="infection-rate-label">Infection rate in %: 20</p>
-    <input type="range" min="5" max="50" value="25" id="infection-radius-slider">
+    <input type="range" min="1" max="100" value="20" id="infection-rate-slider">
     <p>Infection radius</p>
+    <input type="range" min="5" max="50" value="25" id="infection-radius-slider">
+    <br>
     <button id="toggle-social-distancing"onclick="toggleSocialDistancing()">Toggle social-distancing</button>
+    <button id="toggle-market" onclick="toggleMarket()">Toggle markets</button>
+    <br>
     <button id="play-pause" onclick="play()">Play / Pause</button>
     <button id="restart" onclick="sim.restart()">Restart</button>
+    <br>
+    <p>Let infection happen after<input type="number" id="time-unit" min="1" max = "5" step="1" value="1"> seconds.</p>
+    <p>Let agent recover after <input type="number" id="recover-time" min="1" max="10" step="1" value="3"> infection waves.</p>
+
 
 </div>
 

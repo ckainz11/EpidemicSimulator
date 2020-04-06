@@ -4,6 +4,7 @@
     <list default="true" id="7e222af1-70e5-4f0d-bea3-d752121a5c27" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Agent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Agent.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/simulator.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/simulator.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,7 +80,8 @@
       <workItem from="1585849564546" duration="13000" />
       <workItem from="1585856875220" duration="1798000" />
       <workItem from="1586000718720" duration="656000" />
-      <workItem from="1586004110216" duration="1319000" />
+      <workItem from="1586004110216" duration="1388000" />
+      <workItem from="1586184855494" duration="2830000" />
     </task>
     <servers />
   </component>

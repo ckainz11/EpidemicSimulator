@@ -17,6 +17,8 @@ class Agent {
         this.vel.mult(sketch.random(3));
         this.acc = sketch.createVector(0,0);
         this.timeInfected = 0;
+        this.timeAtMarket = 0;
+        this.atMarket = false;
 
     }
     show(sketch){
@@ -39,7 +41,7 @@ class Agent {
     }
     update(sketch, agentsInRange){
         let infectionFrame = false
-        if(sketch.frameCount % 60 == 0 && this.infState == infectionStates.INFECTED){
+        if(sketch.frameCount % timeUnit ==  0 && this.infState == infectionStates.INFECTED){
             infectionFrame = true;
             this.timeInfected += 1;
         }
@@ -51,29 +53,31 @@ class Agent {
                 distance.setMag(10);
                 this.acc.add(distance);
             }
-            if(this.infState === infectionStates.INFECTED && infectionFrame){ //% 60 means every sec there is a infection attempt
+            if(this.infState === infectionStates.INFECTED && infectionFrame){
                 if(agent.infState === infectionStates.SUSCEPTIBLE && sketch.random(100)<infectionRate){
                     agent.infState = infectionStates.INFECTED;
                 }
             }
         }
-        if(this.timeInfected == 5 && this.infState === infectionStates.INFECTED)
+        if(this.timeInfected == recoverTime && this.infState === infectionStates.INFECTED)
             this.infState = infectionStates.RECOVERED;
-
-        this.vel.add(this.acc);
-        this.vel.setMag(1);
-        this.pos.add(this.vel);
-        if(this.pos.x >= 395){
-            this.pos.x = 395;
+        if(sketch.random(100) > 95 && sketch.frameCount % timeUnit == 0 && marketEnabled){
+            this.pos.x = marketLocation.x;
+            this.pos.y = marketLocation.y;
         }
-        else if(this.pos.x <= 5){
-            this.pos.x = 5;
-        }
-        else if(this.pos.y >= 395){
-            this.pos.y = 395;
-        }
-        else if(this.pos.y <= 5){
-            this.pos.y = 5;
+        else {
+            this.vel.add(this.acc);
+            this.vel.setMag(1);
+            this.pos.add(this.vel);
+            if (this.pos.x >= 395) {
+                this.pos.x = 395;
+            } else if (this.pos.x <= 5) {
+                this.pos.x = 5;
+            } else if (this.pos.y >= 395) {
+                this.pos.y = 395;
+            } else if (this.pos.y <= 5) {
+                this.pos.y = 5;
+            }
         }
     }
     inRange(agent, sketch){
