@@ -1,7 +1,8 @@
 const infectionStates = {
     SUSCEPTIBLE: 'susceptible',
     INFECTED: 'infected',
-    RECOVERED: 'recovered'
+    RECOVERED: 'recovered',
+    DEAD: 'dead'
 }
 
 class Agent {
@@ -24,6 +25,7 @@ class Agent {
     show(sketch){
         switch (this.infState) {
             case infectionStates.SUSCEPTIBLE: sketch.fill(45, 74, 83); break;
+            case infectionStates.DEAD: sketch.fill(255, 0, 0); break;
             case infectionStates.INFECTED: {
                 if(showRadii) {
                     sketch.noFill();
@@ -59,13 +61,19 @@ class Agent {
                 }
             }
         }
-        if(this.timeInfected == recoverTime && this.infState === infectionStates.INFECTED)
-            this.infState = infectionStates.RECOVERED;
+        if(this.timeInfected == recoverTime && this.infState === infectionStates.INFECTED) {
+            if(sketch.random(100) < 20)
+                this.infState = infectionStates.DEAD
+            else
+                this.infState = infectionStates.RECOVERED;
+
+        }
         if(sketch.random(100) > 95 && sketch.frameCount % timeUnit == 0 && marketEnabled){
             this.pos.x = marketLocation.x;
             this.pos.y = marketLocation.y;
         }
-        else {
+        else if(this.infState !== infectionStates.DEAD){
+            
             this.vel.add(this.acc);
             this.vel.setMag(1);
             this.pos.add(this.vel);
